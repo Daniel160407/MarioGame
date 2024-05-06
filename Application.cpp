@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include "model/Player.h"
 #include <iostream>
 
 int main(){
@@ -9,7 +10,12 @@ int main(){
 
     sf::Sprite player(playerTexture);
     player.setScale(0.2f, 0.2f);
-    player.setPosition(0, 100);
+    float playerYPos = window.getSize().y - player.getGlobalBounds().height;
+    player.setPosition(0, playerYPos);
+
+    Player playerData(1.0f, 1.0f, 0.5f);
+    bool isJumping = false;
+    bool falling = false;
 
     while(window.isOpen()){
         sf::Event event;
@@ -19,9 +25,36 @@ int main(){
             }
         }
 
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
+            player.move(playerData.getMoveSpeed(), 0);
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
+            player.move(-playerData.getMoveSpeed(), 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !isJumping){
+            isJumping = true;
+            playerData.setJumpSpeed(-1.0f);
+        }
+
+        if(isJumping && !falling){
+            player.move(0, -0.3f);
+            if(player.getPosition().y <= 450){
+                falling = true;
+            }
+        }
+
+        if(falling){
+            player.move(0, 0.3f);
+            if(player.getPosition().y >= window.getSize().y - player.getGlobalBounds().height){
+                falling = false;
+                isJumping = false;
+            }
+        }
+
+
         window.clear();
 
-        window.draw(player, sf::BlendAlpha);
+        window.draw(player);
 
         window.display();
     }
