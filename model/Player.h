@@ -1,3 +1,6 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
 class Player {
     private:
     float moveSpeed;
@@ -14,3 +17,5 @@ class Player {
     void setGravity(float gravity);
     void setJumpSpeed(float jumpSpeed);
 };
+
+#endif
